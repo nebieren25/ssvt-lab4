@@ -71,4 +71,5 @@ We also implemented `visualizeRandomLTS`, which uses QuickCheck's `generate` fun
 
 We tested the visualization with a predefined model, a model containing a terminal state, and a randomly generated IOLTS. All three produced the expected output.
 
+UvA chat was used to polish the report.
 Time Spent: 60 min
