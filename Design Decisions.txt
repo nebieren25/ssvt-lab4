@@ -31,3 +31,44 @@ We then built genStrace to randomly sample generated suspension traces for Quick
 Finally, we verified the implementation across three structural properties: confirming that the empty trace is always present, checking prefix closure for all suspension traces, and ensuring that traces contain only valid input, output, or delta labels.
 
 Time spent: 110 min
+#Exercise 4
+
+For Exercise 4, we implemented the `after` function to find all possible states reachable after a given trace.
+We used `tauClosure` to include states reachable through internal tau transitions, and `foldl` to process the actions in order. Delta is handled separately by keeping only quiescent states, where no output or tau transition is possible.
+We tested the implementation with concrete cases covering tau, delta, nondeterminism, and invalid traces. We also tested it using ordinary traces from `LTS.hs` and suspension traces from Exercise 3.
+Finally, we used QuickCheck with randomly generated IOLTS models. All 12 concrete tests passed, and both QuickCheck properties passed 100 tests each.
+
+Time Spent: 90 min
+
+#Exercise 5
+
+For Exercise 5, we created an IOLTS model representing the correct behavior of the door, including the open, closed, and locked states.
+
+We implemented `testLTSAgainstSUT` to compare the outputs of the door implementations with the outputs allowed by the specification. We reused the `after` function from Exercise 4 and explored possible command sequences, keeping track of the implementation's internal state.
+
+To avoid infinite loops, we kept track of previously visited state combinations. This also allowed us to test longer sequences where some bugs only appear after several commands.
+
+We tested all eight door implementations. The correct implementation (`doorImpl1`) was accepted, while the other seven were rejected due to incorrect outputs or runtime errors.
+
+   Bugs found:
+- `doorImpl2`: Returns `opened` instead of `closed` after `close`.
+- `doorImpl3`: Remains in the wrong state after `unlock`, causing a later command to fail.
+- `doorImpl4`: Uses incorrect behavior for the `lock` and `unlock` commands.
+- `doorImpl5`: Returns `open` instead of `opened`.
+- `doorImpl6`: The door becomes stuck after repeated opening and closing.
+- `doorImpl7`: An `unlock` command eventually produces an incorrect keycode error.
+- `doorImpl8`: An `open` command fails after a longer sequence of valid commands.
+
+Time Spent: 100 min
+
+#Exercise 6
+
+For Exercise 6, we implemented `visualizeLTS` to display an IOLTS as an ASCII representation in the terminal. We chose this approach because it is simple and does not require additional libraries or external software.
+
+The function displays each state with its outgoing transitions and marks the initial state with an arrow. Input and output labels are shown with their corresponding prefixes, while internal tau transitions are displayed separately.
+
+We also implemented `visualizeRandomLTS`, which uses QuickCheck's `generate` function to visualize randomly generated IOLTS models from Exercise 2.
+
+We tested the visualization with a predefined model, a model containing a terminal state, and a randomly generated IOLTS. All three produced the expected output.
+
+Time Spent: 60 min
