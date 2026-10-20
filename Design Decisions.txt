@@ -1,0 +1,33 @@
+#Exercise 1
+For Exercise 1, we implemented validateLTS, that checks if each individual constraint about the LTS is valid.
+In order to being able to test the single properties in the followinng exercise, the function is an And conjunction of all the properties.
+
+Here are the factors that would result in an invalid IOLTS according to the definition:
+1. Empty State Set: States set Q is empty (Q = []).
+2. Initial State Membership: Initial state q0 does not belong to Q (q0 notElem Q).
+3. Duplicate States: States list Q contains duplicate state identifiers.
+4. Non-Disjoint Labels: Input labels (LI) and Output labels (LU) overlap (LI intersect LU /= []).
+5. Reserved Labels in Sets: LI or LU contain reserved special labels ("tau" or "delta").
+6. Invalid Label Prefixes: Inputs do not start with '?' or outputs do not start with '!'.
+7. Duplicate Labels: Input or output label lists contain duplicate entries.
+8. Invalid Transition States: A transition (s1, l, s2) uses a state s1 or s2 not in Q.
+9. Invalid Transition Labels: A transition label l is not in LI, LU, or equal to "tau".
+10. Duplicate Transitions: Transition relation T contains duplicate transitions.
+
+Time spent: 50 min
+
+#Exercise 2
+For Exercise 2, we built random generators to produce valid and invalid transition systems for QuickCheck testing.
+The valid generator, genValidIOLTS, creates a non-empty set of states starting from 1, picks input and output labels from separate pools to avoid overlap, and generates unique transitions using only existing states and valid labels.
+To perform negative testing, we also created genInvalidIOLTS, which takes a valid system and deliberately introduces a single fault, such as using an invalid initial state, overlapping label sets, or referencing missing states. 
+We then used QuickCheck to confirm that all generated valid systems pass validateLTS, while all invalid systems are correctly rejected.
+
+Time Spent: 45 min
+
+Design Decisions:
+For Exercise 3, we implemented the straces function to compute suspension traces for an IOLTS, taking quiescent states into account by dynamically adding delta self-loops.
+To prevent infinite recursion caused by graph cycles or tau loops, we bounded the trace search depth and decremented the depth limit on every transition step.
+We then built genStrace to randomly sample generated suspension traces for QuickCheck testing.
+Finally, we verified the implementation across three structural properties: confirming that the empty trace is always present, checking prefix closure for all suspension traces, and ensuring that traces contain only valid input, output, or delta labels.
+
+Time spent: 110 min
